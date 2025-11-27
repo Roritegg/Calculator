@@ -1,11 +1,12 @@
 #include <iostream>
-#include "mainwindow.h"
 #include "math_core.h"
 
-MathCore::MathCore(): m_firstNum(0),
+MathCore::MathCore():
+    m_firstNum(0),
     m_secondNum(0),
     m_result(0),
-    m_operation(MathOperation::UNKOWN)
+    m_operation(MathOperation::UNKNOWN),
+    m_operationChar(' ')
 {}
 
 void MathCore::setFirstNum(float num)
@@ -15,6 +16,7 @@ void MathCore::setFirstNum(float num)
 
 void MathCore::setOperation(QChar ch)
 {
+    m_operationChar = ch;
     switch (ch.toLatin1())
     {
     case '+':
@@ -30,7 +32,7 @@ void MathCore::setOperation(QChar ch)
         m_operation = MathOperation::DIV;
         break;
     default:
-        m_operation = MathOperation::UNKOWN;
+        m_operation = MathOperation::UNKNOWN;
     }
 }
 
@@ -38,41 +40,36 @@ void MathCore::calculate(float num)
 {
     m_secondNum = num;
 
-    std::cout << m_firstNum << " " << m_secondNum << std::endl;
-
     switch(m_operation)
     {
     case PLUS:
         m_result = m_firstNum + m_secondNum;
-        std::cout << m_result << std::endl;
         break;
     case MINUS:
         m_result = m_firstNum - m_secondNum;
-        std::cout << m_result << std::endl;
         break;
     case MULT:
         m_result = m_firstNum * m_secondNum;
-        std::cout << m_result << std::endl;
         break;
     case DIV:
-        if (m_secondNum != 0)
+        if (m_secondNum != 0.0f)
         {
             m_result = m_firstNum / m_secondNum;
-            std::cout << m_result << std::endl;
-            break;
         }
         else
         {
-            std::cout << "U can't divide by zero! ERORR!!!" << std::endl;
-            break;
+            std::cout << "Error: Division by zero!" << std::endl;
+            m_result = 0;
         }
+        break;
     default:
-        m_result = 0;
-        std::cout << m_result << std::endl;
+        m_result = m_secondNum;
     }
 
+    m_operation = UNKNOWN;
+}
 
-
-    m_firstNum = 0;
-    m_secondNum = 0;
+QString MathCore::getLastOperation() const
+{
+    return QString(m_operationChar);
 }
